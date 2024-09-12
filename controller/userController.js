@@ -3,6 +3,7 @@ import UserModel from "../model/userSchema.js";
 import fileUploader from "../utils/fileUploader.js";
 
 const dashboardValidate = async (req, res) => {
+
   try {
     
     const userValid = await UserModel.findOne({ _id: req.verifyuserId });
@@ -54,7 +55,6 @@ const dashboardValidate = async (req, res) => {
 //     return res.status(400).json({ status: 400, message: "Internal Server Error" });
 //   }
 // };
-
 const postController = async (req, res) => {
   try {
     // Ensure file is uploaded
@@ -67,7 +67,9 @@ const postController = async (req, res) => {
     }
 
     const imageBuffer = req.files[0].buffer; // Get the file buffer
-    const imageFile = await fileUploader(imageBuffer); // Upload the buffer to Cloudinary
+
+    // Upload the buffer to Cloudinary
+    const imageFile = await fileUploader(imageBuffer);
 
     const { name, email, contact } = req.body;
     if (!name || !email || !contact) {
@@ -87,12 +89,12 @@ const postController = async (req, res) => {
     });
 
     const objtosend = {
-      name: name,
-      email: email,
-      contact: contact,
-      imageFile: imageFile.secure_url, // Cloudinary URL
+      name,
+      email,
+      contact,
+      imageFile: imageFile.secure_url, // Correctly store the Cloudinary URL
       verifyUserId: req.verifyuserId,
-      times: times,
+      times,
     };
 
     const crudOperation = new CrudModel(objtosend);
@@ -111,7 +113,6 @@ const postController = async (req, res) => {
     });
   }
 };
-
 
 const allPostController = async (req, res) => {
   try {
